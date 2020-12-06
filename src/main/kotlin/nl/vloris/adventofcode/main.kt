@@ -3,5 +3,5 @@ package nl.vloris.adventofcode
 import nl.vloris.adventofcode.advent2020.*
 
 fun main() {
-    Day4().run()
+    Day5().run()
 }

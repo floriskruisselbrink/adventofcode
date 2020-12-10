@@ -1,5 +1,7 @@
 package nl.vloris.adventofcode.common
 
+import kotlin.system.measureTimeMillis
+
 abstract class BaseSolver(
     val year: Int,
     val day: Int
@@ -10,10 +12,16 @@ abstract class BaseSolver(
     fun run() {
         println("=== $year day $day ===")
         print("-- Part1: ")
-        part1()
+        val elapsed1 = measureTimeMillis {
+            part1()
+        }
+        println("-- Part1 took $elapsed1 milliseconds")
 
         print("-- Part2: ")
-        part2()
+        val elapsed2 = measureTimeMillis {
+            part2()
+        }
+        println("-- Part2 took $elapsed2 milliseconds")
     }
 
     protected fun getInputLines(): List<String> {

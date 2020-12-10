@@ -2,17 +2,20 @@ package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
 
-class Day7 : BaseSolver(2020, 7) {
+fun main() = Day7.solve()
+
+
+object Day7 : BaseSolver(2020, 7) {
     data class Bag(val color: String)
     data class Rule(val bag: Bag, val innerBags: List<Pair<Int, Bag>>) {
         fun contains(innerBag: Bag): Boolean =
             innerBags.any { (_, bag) -> bag == innerBag }
     }
 
-    override fun part1() {
+    override fun part1(): Int {
         val rules = readInput()
         val outerBags = findOuterBag(Bag("shiny gold"), rules)
-        println(outerBags.distinct().count())
+        return outerBags.distinct().count()
     }
 
     private fun findOuterBag(innerBag: Bag, rules: List<Rule>): List<Bag> {
@@ -24,11 +27,11 @@ class Day7 : BaseSolver(2020, 7) {
         return outerBags + moreOuterBags
     }
 
-    override fun part2() {
+    override fun part2(): Int {
         val rules = readInput()
         val innerBags = findInnerBags(Bag("shiny gold"), rules)
 
-        println(innerBags.sumBy { it.first })
+        return innerBags.sumBy { it.first }
     }
 
     private fun findInnerBags(outerBag: Bag, rules: List<Rule>): List<Pair<Int, Bag>> {

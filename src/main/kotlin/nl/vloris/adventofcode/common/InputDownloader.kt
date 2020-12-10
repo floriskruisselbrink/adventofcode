@@ -1,43 +1,28 @@
 package nl.vloris.adventofcode.common
 
 import java.io.File
-import java.net.HttpURLConnection
+import java.io.InputStream
 import java.net.URL
 
-class InputDownloader(
-    private val year: Int,
-    private val day: Int
-) {
-    private val sessionId = checkNotNull(System.getenv("AOC_SESSION")) { "Environment parameter AOC_SESSION must be set"}
+private val AOC_SESSION =
+    checkNotNull(System.getenv("AOC_SESSION")) { "Environment parameter AOC_SESSION must be set" }
 
-    private val file = File("out/input-$year-$day.txt")
+fun retrieveInput(year: Int, day: Int) =
+    readFromCache(year, day) ?: readFromUrl(year, day).also { write(it, year, day) }
 
-    fun getInput(): String {
-        if (!fileExists()) {
-            download()
-        }
+private fun readFromCache(year: Int, day: Int) =
+    File("data/$year/input-$day.txt").takeIf { it.exists() }?.readText()
 
-        return file.readText()
-    }
+private fun readFromUrl(year: Int, day: Int) =
+    URL("https://adventofcode.com/$year/day/$day/input")
+        .openConnection()
+        .apply { addRequestProperty("Cookie", "session=$AOC_SESSION") }
+        .getInputStream()
+        .use(InputStream::readBytes)
+        .toString(Charsets.UTF_8)
+        .trimEnd()
 
-    private fun fileExists(): Boolean {
-        return file.exists() && file.canRead()
-    }
-
-    private fun download() {
-        val url = URL("https://adventofcode.com/$year/day/$day/input")
-
-        with(url.openConnection() as HttpURLConnection) {
-            requestMethod = "GET"
-            setRequestProperty("Cookie", "session=$sessionId;")
-
-            println("Downloading $url...")
-
-            inputStream.use { inputStream ->
-                file.outputStream().use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            }
-        }
-    }
+private fun write(input: String, year: Int, day: Int) {
+    File("data/$year").mkdirs()
+    File("data/$year/input-$day.txt").writeText(input)
 }

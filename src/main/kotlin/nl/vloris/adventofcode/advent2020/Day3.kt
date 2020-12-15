@@ -2,25 +2,21 @@ package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
 
-class Day3 : BaseSolver(2020, 3) {
+fun main() = Day3.solve()
+
+object Day3 : BaseSolver(2020, 3) {
     private val treeMap = getInputLines()
 
-    override fun part1() {
-        val treesFound = countTreesOnSlope(treeMap, Point(3, 1))
-        println("$treesFound trees encountered")
-    }
+    override fun part1() = countTreesOnSlope(Point(3, 1))
 
-    override fun part2() {
-        val result =
-                    countTreesOnSlope(treeMap, Point(1, 1)) *
-                    countTreesOnSlope(treeMap, Point(3, 1)) *
-                    countTreesOnSlope(treeMap, Point(5, 1)) *
-                    countTreesOnSlope(treeMap, Point(7, 1)) *
-                    countTreesOnSlope(treeMap, Point(1, 2))
-        println(result)
-    }
+    override fun part2() =
+                countTreesOnSlope(Point(1, 1)) *
+                countTreesOnSlope(Point(3, 1)) *
+                countTreesOnSlope(Point(5, 1)) *
+                countTreesOnSlope(Point(7, 1)) *
+                countTreesOnSlope(Point(1, 2))
 
-    private fun countTreesOnSlope(treeMap: List<String>, slope: Point): Int {
+    private fun countTreesOnSlope(slope: Point): Int {
         val mapWidth = treeMap[0].length
         val mapHeight = treeMap.size
 

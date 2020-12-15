@@ -2,13 +2,15 @@ package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
 
-class Day9 : BaseSolver(2020, 9) {
-    override fun part1() {
+fun main() = Day9.solve()
+
+object Day9 : BaseSolver(2020, 9) {
+    override fun part1(): Long {
         val input = getInputLines().map(String::toLong)
-        println(findInvalidNumber(input, 25))
+        return findInvalidNumber(input, 25)
     }
 
-    override fun part2() {
+    override fun part2(): Long? {
         val input = getInputLines().map(String::toLong)
         val invalidNumber = findInvalidNumber(input, 25)
 
@@ -22,11 +24,11 @@ class Day9 : BaseSolver(2020, 9) {
             }
 
             if (sum == invalidNumber) {
-                val result = calculateWeakness(fromIndex, toIndex, input)
-                println("Found $fromIndex to $toIndex: $result")
-                return
+                return calculateWeakness(fromIndex, toIndex, input)
             }
         }
+
+        return null
     }
 
     private fun findInvalidNumber(list: List<Long>, preambleSize: Int): Long {

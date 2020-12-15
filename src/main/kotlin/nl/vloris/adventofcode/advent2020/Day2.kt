@@ -2,8 +2,10 @@ package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
 
-class Day2 : BaseSolver(2020, 2) {
-    override fun part1() {
+fun main() = Day2.solve()
+
+object Day2 : BaseSolver(2020, 2) {
+    override fun part1(): Int {
         var validPasswords = 0
 
         for (inputLine in getInputLines()) {
@@ -14,10 +16,10 @@ class Day2 : BaseSolver(2020, 2) {
             }
         }
 
-        println("$validPasswords passwords are valid")
+        return validPasswords
     }
 
-    override fun part2() {
+    override fun part2(): Int {
         var validPasswords = 0
 
         for (inputLine in getInputLines()) {
@@ -28,7 +30,7 @@ class Day2 : BaseSolver(2020, 2) {
             }
         }
 
-        println("$validPasswords passwords are valid")
+        return validPasswords
     }
 }
 

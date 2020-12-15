@@ -3,7 +3,9 @@ package nl.vloris.adventofcode.advent2020
 import nl.vloris.adventofcode.common.BaseSolver
 import nl.vloris.adventofcode.common.Graph
 
-class Day8 : BaseSolver(2020, 8) {
+fun main() = Day8.solve()
+
+object Day8 : BaseSolver(2020, 8) {
     sealed class Operation {
         data class Nop(val argument: Int) : Operation()
         data class Acc(val argument: Int) : Operation()
@@ -23,15 +25,14 @@ class Day8 : BaseSolver(2020, 8) {
             }
     }
 
-    override fun part1() {
+    override fun part1(): Int {
         val operations = readInput()
         val seenAddresses = mutableSetOf<Int>()
-        val result = run(operations) { ip -> !seenAddresses.add(ip) }
 
-        println(result)
+        return run(operations) { ip -> !seenAddresses.add(ip) }
     }
 
-    override fun part2() {
+    override fun part2(): Int {
         val originalOperations = readInput()
 
         var iteration = 0
@@ -42,8 +43,7 @@ class Day8 : BaseSolver(2020, 8) {
             operations = modifyOperations(originalOperations, iteration)
         }
 
-        val acc = run(operations) { ip -> ip == operations.size }
-        println(acc)
+        return run(operations) { ip -> ip == operations.size }
     }
 
     private fun run(operations: List<Operation>, exitCondition: (Int) -> Boolean): Int {

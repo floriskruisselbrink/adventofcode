@@ -2,10 +2,12 @@ package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
 
-class Day4 : BaseSolver(2020, 4) {
+fun main() = Day4.solve()
+
+object Day4 : BaseSolver(2020, 4) {
     private val requiredFields = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid")
 
-    override fun part1() {
+    override fun part1(): Int {
         val passportData = getInput()
             .split("\n\n")
             .map { p -> p.split(' ', '\n') }
@@ -14,10 +16,10 @@ class Day4 : BaseSolver(2020, 4) {
             .map { p -> p.map { f -> f.split(':').first() } }
             .filter { p -> p.containsAll(requiredFields) }
 
-        println(validPassports.size)
+        return validPassports.size
     }
 
-    override fun part2() {
+    override fun part2(): Int {
         val passportData = getInput()
             .split("\n\n")
             .map { p -> p.split(' ', '\n') }
@@ -31,7 +33,7 @@ class Day4 : BaseSolver(2020, 4) {
             }
             .filter(Passport::isValid)
 
-        println(validPassports.size)
+        return validPassports.size
     }
 
     data class Passport(val fields: Map<String, String>) {

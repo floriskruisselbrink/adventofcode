@@ -2,23 +2,22 @@ package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
 
-class Day5 : BaseSolver(2020, 5) {
-    override fun part1() {
-        val seatIds = convertToSeatIds(getInputLines())
+fun main() = Day5.solve()
 
-        println(seatIds.maxOrNull())
-    }
+object Day5 : BaseSolver(2020, 5) {
+    override fun part1() =
+        convertToSeatIds(getInputLines()).maxOrNull()
 
-    override fun part2() {
+    override fun part2(): Int? {
         val seatIds = convertToSeatIds(getInputLines()).sorted()
-        println(seatIds)
 
         for (i in 1..seatIds.size - 2) {
-            if (seatIds[i] - seatIds[i-1] == 2) {
-                println(seatIds[i]-1)
-                return
+            if (seatIds[i] - seatIds[i - 1] == 2) {
+                return seatIds[i] - 1
             }
         }
+
+        return null
     }
 
     private fun convertToSeatIds(input: List<String>): List<Int> {

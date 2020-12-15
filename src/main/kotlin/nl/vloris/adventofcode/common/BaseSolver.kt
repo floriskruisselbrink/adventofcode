@@ -1,27 +1,25 @@
 package nl.vloris.adventofcode.common
 
-import kotlin.system.measureTimeMillis
+import kotlin.system.measureNanoTime
 
 abstract class BaseSolver(
     val year: Int,
     val day: Int
 ) {
-    abstract fun part1()
-    abstract fun part2()
+    abstract fun part1(): Any?
+    abstract fun part2(): Any?
 
-    fun run() {
+    fun solve() {
         println("=== $year day $day ===")
-        print("-- Part1: ")
-        val elapsed1 = measureTimeMillis {
-            part1()
-        }
-        println("-- Part1 took $elapsed1 milliseconds")
+        printSolution { part1() }
+        printSolution { part2() }
+    }
 
-        print("-- Part2: ")
-        val elapsed2 = measureTimeMillis {
-            part2()
-        }
-        println("-- Part2 took $elapsed2 milliseconds")
+    private fun printSolution(solve: () -> Any?) {
+        var solution: Any?
+        val time = measureNanoTime { solution = solve() } / 1_000_000
+        val formattedTime = time.toString().padStart(4)
+        println("[$formattedTime ms] $solution")
     }
 
     protected fun getInputLines(): List<String> {
@@ -29,6 +27,6 @@ abstract class BaseSolver(
     }
 
     protected fun getInput(): String {
-        return InputDownloader(year, day).getInput()
+        return retrieveInput(year, day)
     }
 }

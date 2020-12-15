@@ -1,12 +1,13 @@
 package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
-import nl.vloris.adventofcode.common.Graph
 
-class Day10 : BaseSolver(2020, 10) {
+fun main() = Day10.solve()
+
+object Day10 : BaseSolver(2020, 10) {
     private val input: List<Int> by lazy { getInputLines().map(String::toInt) }
 
-    override fun part1() {
+    override fun part1(): Int {
         val adapters = input.sorted()
 
         var diff1 = 0
@@ -22,10 +23,10 @@ class Day10 : BaseSolver(2020, 10) {
             previousAdapter = currentAdapter
         }
 
-        println(diff1 * diff3)
+        return diff1 * diff3
     }
 
-    override fun part2() {
+    override fun part2(): Long? {
         val adapters = (listOf(0) + input).sorted()
         val device = adapters.last() + 3
 
@@ -35,12 +36,12 @@ class Day10 : BaseSolver(2020, 10) {
 
         for (i in adapters.reversed()) {
             possibilities[i] =
-                        possibilities.getOrDefault(i + 1, 0) +
+                possibilities.getOrDefault(i + 1, 0) +
                         possibilities.getOrDefault(i + 2, 0) +
                         possibilities.getOrDefault(i + 3, 0)
         }
 
-        println(possibilities[0])
+        return possibilities[0]
     }
 
     private fun getDummyInputLines(): List<String> = """28

@@ -1,12 +1,11 @@
+package nl.vloris.adventofcode.advent2020
 
-fun main(args: Array<String>) {
-	println("Part 1: ${Day13.part1()}")
-	println("Part 2: ${Day13.part2()}")
-}
+import nl.vloris.adventofcode.common.BaseSolver
 
+fun main() = Day13.solve()
 
-object Day13 {
-	fun part1(): Int {
+object Day13 : BaseSolver(2020, 13) {
+	override fun part1(): Int {
 		val input = getInputLines()
 	
 		val earliestTimestamp = input[0].toInt()
@@ -26,7 +25,7 @@ object Day13 {
 		}
 	}
 	
-	fun part2(): Long {
+	override fun part2(): Long {
 		val input = getInputLines()
 		val schedules = input[1].split(',')
 			.mapIndexed { i, bus -> bus to i}
@@ -47,6 +46,4 @@ object Day13 {
 	}
 	
 	private fun getDummyInput() = listOf("939", "7,13,x,x,59,x,31,19")
-	
-	private fun getInputLines() = generateSequence(::readLine).toList()
 }

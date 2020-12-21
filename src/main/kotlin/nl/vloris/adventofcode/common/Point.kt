@@ -1,9 +1,31 @@
 package nl.vloris.adventofcode.common
 
 import java.lang.IllegalArgumentException
+import kotlin.math.*
 
 data class Point(val x: Int, val y: Int) {
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
+    operator fun plus(direction: Direction) = plus(direction, 1)
+
+    fun plus(direction: Direction, amount: Int) = when (direction) {
+        Direction.NORTH -> Point(x, y - amount)
+        Direction.EAST -> Point(x + amount, y)
+        Direction.SOUTH -> Point(x, y + amount)
+        Direction.WEST -> Point(x - amount, y)
+    }
+
+    operator fun times(amount: Int) = Point(x * amount, y * amount)
+
+    fun rotate(degrees: Int): Point = rotate(degrees * (Math.PI / 180.0))
+    fun rotate(radials: Double): Point {
+        val s = sin(radials)
+        val c = cos(radials)
+
+        val nx = x * c - y * s
+        val ny = x * s + y * c
+
+        return Point(nx.roundToInt(), ny.roundToInt())
+    }
 
     fun inBound(xRange: IntRange, yRange: IntRange) = x in xRange && y in yRange
 

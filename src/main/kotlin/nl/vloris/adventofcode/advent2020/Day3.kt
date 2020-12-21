@@ -1,6 +1,7 @@
 package nl.vloris.adventofcode.advent2020
 
 import nl.vloris.adventofcode.common.BaseSolver
+import nl.vloris.adventofcode.common.Point
 
 fun main() = Day3.solve()
 
@@ -35,4 +36,3 @@ object Day3 : BaseSolver(2020, 3) {
 
 }
 
-data class Point(val x: Int, val y: Int)

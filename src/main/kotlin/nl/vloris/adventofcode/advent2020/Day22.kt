@@ -4,111 +4,67 @@ import nl.vloris.adventofcode.common.BaseSolver
 
 fun main() = Day22.solve()
 
+private typealias Deck = List<Int>
+
+private typealias GameResult = Pair<Int, Deck>
+
+private enum class GameMode { SIMPLE, RECURSIVE }
+
 object Day22 : BaseSolver(2020, 22) {
-    val debug = false
+    override fun part1() = playGame(parseInput(), GameMode.SIMPLE).let(::score)
 
-    private enum class GameMode { SIMPLE, RECURSIVE }
+    override fun part2() = playGame(parseInput(), GameMode.RECURSIVE).let(::score)
 
-    private class Game(
-        player1: List<Int>,
-        player2: List<Int>,
-        val gameMode: GameMode = GameMode.SIMPLE,
-        val game: Int = 1
-    ) {
-        val decks = listOf(player1.toMutableList(), player2.toMutableList())
-        val deckHistory = listOf(mutableListOf<List<Int>>(), mutableListOf<List<Int>>())
-        var round = 0
+    private fun score(result: GameResult): Int =
+        result.second.mapIndexed { i, v -> (result.second.size - i) * v }.sum()
 
-        fun playUntilWinner(): Int {
-            while (!hasWinner()) {
-                playRound()
-            }
+    private fun playGame(players: Pair<Deck, Deck>, mode: GameMode): GameResult {
+        val history = mutableSetOf<Pair<Deck, Deck>>()
 
-            return if (decks[0].isNotEmpty()) 0 else 1
-        }
-
-        fun playRound() {
-            round++
-            if (debug) {
-                println("-- Round $round (game $game) --")
-                println("Player 1's deck: ${decks[0]}")
-                println("Player 2's deck: ${decks[1]}")
-            }
-
-            if (gameMode == GameMode.RECURSIVE) {
-                if (deckHistory[0].any { it == decks[0] } || deckHistory[1].any { it == decks[1] }) {
-                    if (debug) println("Infinite loop detected. Player 1 wins game $game")
-                    decks[1].clear()
-                    return
+        tailrec fun play(player1: MutableList<Int>, player2: MutableList<Int>): GameResult {
+            if (mode == GameMode.RECURSIVE) {
+                if (history.contains(player1 to player2)) {
+                    return 1 to player1
                 } else {
-                    deckHistory[0].add(decks[0].toList())
-                    deckHistory[1].add(decks[1].toList())
+                    history.add(player1 to player2)
                 }
             }
 
-            val cards = decks.map { it.removeFirst() }
-
-            if (debug) {
-                println("Player 1 plays: ${cards[0]}")
-                println("Player 2 plays: ${cards[1]}")
+            val (card1, card2) = player1.removeFirst() to player2.removeFirst()
+            val winner = when {
+                mode == GameMode.RECURSIVE && player1.size >= card1 && player2.size >= card2 ->
+                    playGame(
+                        player1.take(card1) to player2.take(card2), mode
+                    ).first
+                (card1 > card2) -> 1
+                else -> 2
             }
 
-            val winner = determineRoundWinner(cards)
-            if (debug) println("Player ${winner + 1} wins the round!\n")
-        }
+            when (winner) {
+                1 -> with(player1) {
+                    add(card1)
+                    add(card2)
+                }
+                2 -> with(player2) {
+                    add(card2)
+                    add(card1)
+                }
+            }
 
-        fun determineRoundWinner(cards: List<Int>): Int {
             return when {
-                gameMode == GameMode.RECURSIVE && decks[0].size >= cards[0] && decks[1].size >= cards[1] -> {
-                    val subGame = Game(decks[0].take(cards[0]), decks[1].take(cards[1]), gameMode, game + 1)
-                    val winner = subGame.playUntilWinner()
-                    if (winner == 0) {
-                        decks[0].addAll(cards)
-                    } else {
-                        decks[1].addAll(cards.reversed())
-                    }
-                    return winner
-                }
-                cards[0] > cards[1] -> {
-                    decks[0].addAll(cards)
-                    0
-                }
-                cards[1] > cards[0] -> {
-                    decks[1].addAll(cards.reversed())
-                    1
-                }
-                else ->
-                    throw IllegalStateException()
+                player1.isEmpty() -> 2 to player2
+                player2.isEmpty() -> 1 to player1
+                else -> play(player1, player2)
             }
         }
 
-        fun hasWinner(): Boolean = decks.any { it.isEmpty() }
-
-        fun calculateWinningScore(): Int {
-            val winningDeck = if (decks[0].isNotEmpty()) 0 else 1
-            return decks[winningDeck].mapIndexed { i, v -> (decks[winningDeck].size - i) * v }.sum()
-        }
+        return play(players.first.toMutableList(), players.second.toMutableList())
     }
 
-    override fun part1(): Int {
-        val (input1, input2) = getInput()
+    private fun parseInput(): Pair<Deck, Deck> =
+        getInput()
             .split("\n\n")
             .map { deck -> deck.split("\n").drop(1).map(String::toInt) }
-
-        val game = Game(input1, input2)
-        game.playUntilWinner()
-
-        return game.calculateWinningScore()
-    }
-
-    override fun part2(): Int {
-        val (input1, input2) = getInput()
-            .split("\n\n")
-            .map { deck -> deck.split("\n").drop(1).map(String::toInt) }
-
-        val game = Game(input1, input2, GameMode.RECURSIVE)
-        game.playUntilWinner()
-
-        return game.calculateWinningScore()
-    }
+            .zipWithNext()
+            .first()
 }

@@ -3,8 +3,8 @@ package nl.vloris.adventofcode.common
 import kotlin.system.measureNanoTime
 
 abstract class BaseSolver(
-    val year: Int,
-    val day: Int
+    private val year: Int,
+    private val day: Int
 ) {
     abstract fun part1(): Any?
     abstract fun part2(): Any?

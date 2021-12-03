@@ -6,10 +6,7 @@ fun main() = Day2.solve()
 
 object Day2 : BaseSolver(2021, 2) {
     private val instructions: List<Pair<String, Int>> by lazy {
-        getInputLines().map { line ->
-            val (direction, count) = line.split(' ', limit = 2)
-            direction to count.toInt()
-        }
+        getInputLines().map { it.split(' ').let { (direction, count) -> direction to count.toInt() } }
     }
 
     override fun part1(): Int {

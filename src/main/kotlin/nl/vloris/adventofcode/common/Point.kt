@@ -4,6 +4,11 @@ import java.lang.IllegalArgumentException
 import kotlin.math.*
 
 data class Point(val x: Int, val y: Int) {
+    constructor(s: String) : this(s.substringBefore(',').toInt(), s.substringAfter(',').toInt())
+
+    override fun toString(): String {
+        return "(${x},${y})"
+    }
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun plus(direction: Direction) = plus(direction, 1)
 

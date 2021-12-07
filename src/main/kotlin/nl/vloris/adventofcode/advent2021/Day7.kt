@@ -13,23 +13,10 @@ object Day7 : BaseSolver(2021, 7) {
     override fun part1(): Int = solve { distance -> distance }
     override fun part2(): Int = solve { distance -> (distance * (distance + 1)) / 2 }
 
-    private fun solve(calculateFuel: (Int) -> Int): Int {
-        val smallest = crabs.first()
-        val largest = crabs.last()
-        val distances = Array(crabs.size) { -1 }
-
-        var leastFuelUsed = Int.MAX_VALUE
-        for (targetPosition in smallest..largest) {
-            for (i in crabs.indices) {
-                distances[i] = calculateFuel(abs(crabs[i] - targetPosition))
+    private fun solve(calculateFuel: (Int) -> Int) =
+        (crabs.first()..crabs.last()).map { targetPosition ->
+            crabs.sumOf { crabPosition ->
+                calculateFuel(abs(targetPosition - crabPosition))
             }
-
-            val fuelUsed = distances.sum()
-            if (fuelUsed < leastFuelUsed) {
-                leastFuelUsed = fuelUsed
-            }
-        }
-
-        return leastFuelUsed
-    }
+        }.minOf { it }
 }

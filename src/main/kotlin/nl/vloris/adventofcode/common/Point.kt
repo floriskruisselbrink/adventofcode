@@ -9,6 +9,7 @@ data class Point(val x: Int, val y: Int) {
     override fun toString(): String {
         return "(${x},${y})"
     }
+
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun plus(direction: Direction) = plus(direction, 1)
 
@@ -35,6 +36,7 @@ data class Point(val x: Int, val y: Int) {
     fun inBound(xRange: IntRange, yRange: IntRange) = x in xRange && y in yRange
 
     fun neighbours() = NEIGHBOURS.map { Point(it.x + this.x, it.y + this.y) }
+    fun allNeighbours() = NEIGHBOURS_ALL.map { Point(it.x + this.x, it.y + this.y) }
 
     fun directionTo(other: Point) = when {
         other.x == this.x && other.y < this.y -> Direction.NORTH
@@ -51,6 +53,15 @@ data class Point(val x: Int, val y: Int) {
             Point(0, -1),
             Point(0, 1)
         )
+
+        val NEIGHBOURS_DIAGONAL = listOf(
+            Point(-1, -1),
+            Point(1, -1),
+            Point(-1, 1),
+            Point(1, 1)
+        )
+
+        val NEIGHBOURS_ALL = NEIGHBOURS + NEIGHBOURS_DIAGONAL
     }
 }
 

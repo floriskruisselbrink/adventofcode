@@ -16,40 +16,40 @@ object Day14 : BaseSolver(2021, 14) {
     }
 
     private fun solve(polymer: Polymer, mapping: Map<String, List<String>>, steps: Int): Long {
-        var newPolymer = polymer
-
-        repeat(steps) { newPolymer = newPolymer.polymerize(mapping) }
-
-        val elements = newPolymer.countElements()
-
+        val elements = generateSequence(polymer) { it.polymerize(mapping) }.elementAt(steps).countElements()
         return elements.values.maxOrNull()!! - elements.values.minOrNull()!!
     }
 
     private fun parseInput(input: String): Pair<Polymer, Map<String, List<String>>> {
         val (startSequence, pairs) = input.split("\n\n")
 
-        val pairCounts = startSequence.windowed(2).groupingBy { it }.eachCount().mapValues { it.value.toLong() }
         val mapping = pairs.split('\n').associate { line ->
             val (pair, insert) = line.split(" -> ")
             pair to listOf("${pair[0]}${insert}", "${insert}${pair[1]}")
         }
 
-        return Polymer(startSequence.first(), startSequence.last(), pairCounts) to mapping
+        return Polymer(startSequence) to mapping
     }
 
     private data class Polymer(val firstElement: Char, val lastElement: Char, val pairs: Map<String, Long>) {
-        fun polymerize(mapping: Map<String, List<String>>): Polymer {
-            val newPairs = mutableMapOf<String, Long>()
-            pairs.forEach { (pair, count) ->
-                mapping.getValue(pair).forEach { m ->
-                    newPairs[m] = newPairs.getOrDefault(m, 0) + count
-                }
-            }
-            return this.copy(pairs = newPairs)
-        }
+        constructor(template: String) : this(
+            template.first(),
+            template.last(),
+            template.windowed(2).groupingBy { it }.eachCount().mapValues { it.value.toLong() }
+        )
 
-        fun countElements(): Map<Char, Long> {
-            return pairs.flatMap { (pair, count) -> listOf(pair[0] to count, pair[1] to count) }
+        fun polymerize(mapping: Map<String, List<String>>): Polymer = this.copy(pairs = mutableMapOf<String, Long>()
+            .withDefault { 0L }
+            .apply {
+                for ((pair, count) in pairs) {
+                    for (m in mapping.getValue(pair)) {
+                        put(m, getValue(m) + count)
+                    }
+                }
+            })
+
+        fun countElements(): Map<Char, Long> =
+            pairs.flatMap { (pair, count) -> listOf(pair[0] to count, pair[1] to count) }
                 .groupingBy { it.first }
                 .fold(0L) { sum, (_, count) -> sum + count }
                 .mapValues { (element, count) ->
@@ -58,6 +58,5 @@ object Day14 : BaseSolver(2021, 14) {
                     else
                         count / 2
                 }
-        }
     }
 }
